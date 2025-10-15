@@ -285,7 +285,7 @@ if ($product_id <= 0) {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 GameStore. Tất cả quyền được bảo lưu.</p>
+                <p>&copy; 2025 GameStore. Tất cả quyền được bảo lưu.</p>
             </div>
         </div>
     </footer>

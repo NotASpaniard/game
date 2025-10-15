@@ -8,6 +8,14 @@ $user = getCurrentUser();
 $success = '';
 $error = '';
 
+// Kiểm tra nếu user không tồn tại
+if (!$user) {
+    $error = 'Không thể tải thông tin người dùng. Vui lòng đăng nhập lại.';
+    // Redirect về trang đăng nhập
+    header('Location: ../auth/dang-nhap.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $full_name = trim($_POST['full_name'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -224,8 +232,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="user-details">
-                            <h4><?php echo htmlspecialchars($user['full_name']); ?></h4>
-                            <p>@<?php echo htmlspecialchars($user['username']); ?></p>
+                            <h4><?php echo htmlspecialchars($user['full_name'] ?? 'User'); ?></h4>
+                            <p>@<?php echo htmlspecialchars($user['username'] ?? 'username'); ?></p>
                         </div>
                     </div>
                     
@@ -265,38 +273,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="form-group">
                                     <label for="username">Tên đăng nhập</label>
                                     <input type="text" id="username" class="form-control" 
-                                           value="<?php echo htmlspecialchars($user['username']); ?>" disabled>
+                                           value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>" disabled>
                                     <small class="text-muted">Không thể thay đổi tên đăng nhập</small>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="role">Vai trò</label>
                                     <input type="text" id="role" class="form-control" 
-                                           value="<?php echo ucfirst($user['role']); ?>" disabled>
+                                           value="<?php echo ucfirst($user['role'] ?? 'user'); ?>" disabled>
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="full_name">Họ và tên *</label>
                                 <input type="text" id="full_name" name="full_name" class="form-control" 
-                                       value="<?php echo htmlspecialchars($user['full_name']); ?>" required>
+                                       value="<?php echo htmlspecialchars($user['full_name'] ?? ''); ?>" required>
                             </div>
                             
                             <div class="form-group">
                                 <label for="email">Email *</label>
                                 <input type="email" id="email" name="email" class="form-control" 
-                                       value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                                       value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
                             </div>
                             
                             <div class="form-group">
                                 <label for="phone">Số điện thoại</label>
                                 <input type="tel" id="phone" name="phone" class="form-control" 
-                                       value="<?php echo htmlspecialchars($user['phone']); ?>">
+                                       value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>">
                             </div>
                             
                             <div class="form-group">
                                 <label for="address">Địa chỉ</label>
-                                <textarea id="address" name="address" class="form-control" rows="3"><?php echo htmlspecialchars($user['address']); ?></textarea>
+                                <textarea id="address" name="address" class="form-control" rows="3"><?php echo htmlspecialchars($user['address'] ?? ''); ?></textarea>
                             </div>
                             
                             <button type="submit" class="btn btn-primary">
@@ -354,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 GameStore. Tất cả quyền được bảo lưu.</p>
+                <p>&copy; 2025 GameStore. Tất cả quyền được bảo lưu.</p>
             </div>
         </div>
     </footer>

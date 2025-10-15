@@ -73,6 +73,7 @@ try {
                 <nav class="nav">
                     <a href="index.php" class="nav-link active">Trang chủ</a>
                     <a href="san-pham/" class="nav-link">Sản phẩm</a>
+                    <a href="san-pham/loai-san-pham.php" class="nav-link">Loại sản phẩm</a>
                     <a href="danh-muc/" class="nav-link">Danh mục</a>
                     <a href="huong-dan.php" class="nav-link">Hướng dẫn</a>
                     <a href="lien-he.php" class="nav-link">Liên hệ</a>
@@ -122,8 +123,15 @@ try {
             <h1>Giao dịch vật phẩm game an toàn</h1>
             <p>Nền tảng uy tín cho việc mua bán skin, tài khoản và vật phẩm game với giá tốt nhất</p>
             <div class="hero-actions">
-                <a href="san-pham/" class="btn btn-primary btn-lg">Khám phá ngay</a>
-                <a href="huong-dan.php" class="btn btn-outline btn-lg">Hướng dẫn</a>
+                <a href="san-pham/loai-san-pham.php" class="btn btn-primary btn-lg">
+                    <i class="fas fa-balance-scale"></i> So sánh giá
+                </a>
+                <a href="san-pham/" class="btn btn-outline btn-lg">
+                    <i class="fas fa-shopping-bag"></i> Khám phá sản phẩm
+                </a>
+                <a href="huong-dan.php" class="btn btn-outline btn-lg">
+                    <i class="fas fa-info-circle"></i> Hướng dẫn
+                </a>
             </div>
         </div>
         <div class="hero-stats">
@@ -333,7 +341,7 @@ try {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 GameStore. Tất cả quyền được bảo lưu.</p>
+                <p>&copy; 2025 GameStore. Tất cả quyền được bảo lưu.</p>
             </div>
         </div>
     </footer>

@@ -28,9 +28,10 @@ function getCurrentUser() {
         $db = new Database();
         $conn = $db->getConnection();
         
-        $stmt = $conn->prepare("SELECT * FROM users WHERE id = ? AND status = 'active'");
+        $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$_SESSION['user_id']]);
-        return $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $user ?: null;
     } catch (Exception $e) {
         error_log("Error getting current user: " . $e->getMessage());
         return null;
@@ -40,7 +41,17 @@ function getCurrentUser() {
 function requireLogin() {
     if (!isLoggedIn()) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-        header('Location: auth/dang-nhap.php');
+        // Xác định đường dẫn chính xác dựa trên vị trí hiện tại
+        $current_dir = dirname($_SERVER['PHP_SELF']);
+        if (strpos($current_dir, '/user') !== false) {
+            header('Location: ../auth/dang-nhap.php');
+        } elseif (strpos($current_dir, '/admin') !== false) {
+            header('Location: ../auth/dang-nhap.php');
+        } elseif (strpos($current_dir, '/san-pham') !== false) {
+            header('Location: ../auth/dang-nhap.php');
+        } else {
+            header('Location: auth/dang-nhap.php');
+        }
         exit();
     }
 }

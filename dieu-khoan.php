@@ -74,7 +74,7 @@ require_once 'config/session.php';
         <div class="container">
             <div class="page-header">
                 <h1>Điều khoản sử dụng</h1>
-                <p>Cập nhật lần cuối: 01/01/2024</p>
+                <p>Cập nhật lần cuối: 01/01/2025</p>
             </div>
 
             <div class="terms-content">
@@ -165,7 +165,7 @@ require_once 'config/session.php';
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 GameStore. Tất cả quyền được bảo lưu.</p>
+                <p>&copy; 2025 GameStore. Tất cả quyền được bảo lưu.</p>
             </div>
         </div>
     </footer>

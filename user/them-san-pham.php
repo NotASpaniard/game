@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = floatval($_POST['price'] ?? 0);
     $game_id = intval($_POST['game_id'] ?? 0);
     $category_id = intval($_POST['category_id'] ?? 0);
-    $condition = trim($_POST['condition'] ?? '');
+    $product_condition = trim($_POST['product_condition'] ?? '');
     $delivery_method = trim($_POST['delivery_method'] ?? '');
     
     if (empty($name) || empty($description) || $price <= 0 || $game_id <= 0) {
@@ -40,10 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             $stmt = $conn->prepare("
-                INSERT INTO products (seller_id, name, description, price, game_id, condition, delivery_method, status, created_at) 
+                INSERT INTO products (seller_id, name, description, price, game_id, product_condition, delivery_method, status, created_at) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, 'active', NOW())
             ");
-            $stmt->execute([$user['id'], $name, $description, $price, $game_id, $condition, $delivery_method]);
+            $stmt->execute([$user['id'], $name, $description, $price, $game_id, $product_condition, $delivery_method]);
             
             $product_id = $conn->lastInsertId();
             $success = 'Thêm sản phẩm thành công! <a href="san-pham-cua-toi.php">Xem sản phẩm của tôi</a>';
@@ -268,13 +268,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="condition">Tình trạng</label>
-                                <select id="condition" name="condition" class="form-control">
+                                <label for="product_condition">Tình trạng</label>
+                                <select id="product_condition" name="product_condition" class="form-control">
                                     <option value="">Chọn tình trạng</option>
-                                    <option value="new" <?php echo ($_POST['condition'] ?? '') === 'new' ? 'selected' : ''; ?>>Mới</option>
-                                    <option value="like_new" <?php echo ($_POST['condition'] ?? '') === 'like_new' ? 'selected' : ''; ?>>Như mới</option>
-                                    <option value="good" <?php echo ($_POST['condition'] ?? '') === 'good' ? 'selected' : ''; ?>>Tốt</option>
-                                    <option value="fair" <?php echo ($_POST['condition'] ?? '') === 'fair' ? 'selected' : ''; ?>>Khá</option>
+                                    <option value="new" <?php echo ($_POST['product_condition'] ?? '') === 'new' ? 'selected' : ''; ?>>Mới</option>
+                                    <option value="like_new" <?php echo ($_POST['product_condition'] ?? '') === 'like_new' ? 'selected' : ''; ?>>Như mới</option>
+                                    <option value="good" <?php echo ($_POST['product_condition'] ?? '') === 'good' ? 'selected' : ''; ?>>Tốt</option>
+                                    <option value="fair" <?php echo ($_POST['product_condition'] ?? '') === 'fair' ? 'selected' : ''; ?>>Khá</option>
                                 </select>
                             </div>
                             
@@ -344,7 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 GameStore. Tất cả quyền được bảo lưu.</p>
+                <p>&copy; 2025 GameStore. Tất cả quyền được bảo lưu.</p>
             </div>
         </div>
     </footer>
