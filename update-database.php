@@ -24,6 +24,14 @@ try {
         "ALTER TABLE products MODIFY COLUMN currency ENUM('VND', 'USD', 'GOLD', 'ITEM') DEFAULT 'VND'"
     ];
     
+    // Thêm cột cho bảng games
+    $games_alter_queries = [
+        "ALTER TABLE games ADD COLUMN developer VARCHAR(100)",
+        "ALTER TABLE games ADD COLUMN platform VARCHAR(50) DEFAULT 'PC'",
+        "ALTER TABLE games ADD COLUMN game_url VARCHAR(500)",
+        "ALTER TABLE games ADD COLUMN icon_url VARCHAR(500)"
+    ];
+    
     $success_count = 0;
     $error_count = 0;
     
@@ -51,6 +59,22 @@ try {
         } catch (PDOException $e) {
             echo "<p style='color: red;'>❌ Lỗi: " . $e->getMessage() . "</p>";
             $error_count++;
+        }
+    }
+    
+    // Thêm cột cho bảng games
+    foreach ($games_alter_queries as $query) {
+        try {
+            $conn->exec($query);
+            echo "<p style='color: green;'>✅ " . $query . "</p>";
+            $success_count++;
+        } catch (PDOException $e) {
+            if (strpos($e->getMessage(), 'Duplicate column name') !== false) {
+                echo "<p style='color: orange;'>⚠️ Cột đã tồn tại: " . $query . "</p>";
+            } else {
+                echo "<p style='color: red;'>❌ Lỗi: " . $e->getMessage() . "</p>";
+                $error_count++;
+            }
         }
     }
     

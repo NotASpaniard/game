@@ -47,11 +47,16 @@ CREATE TABLE games (
     description TEXT,
     logo VARCHAR(255),
     category_id INT,
+    developer VARCHAR(100),
+    platform VARCHAR(50) DEFAULT 'PC',
+    game_url VARCHAR(500),
+    icon_url VARCHAR(500),
     status ENUM('active', 'inactive') DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES game_categories(id) ON DELETE SET NULL,
     INDEX idx_category (category_id),
-    INDEX idx_status (status)
+    INDEX idx_status (status),
+    INDEX idx_platform (platform)
 );
 
 -- Bảng loại vật phẩm

@@ -51,24 +51,17 @@ try {
             $stmt->execute([$user['username'], $user['email'], password_hash('demo123', PASSWORD_DEFAULT), $user['full_name'], $user['role']]);
         }
         
-        // Tạo sản phẩm demo
+        // Tạo sản phẩm demo cho World//Zero và Dragon Adventures
         $products = [
-            // CS2 Skins
-            ['name' => 'AK-47 Redline', 'description' => 'Skin AK-47 Redline chất lượng cao', 'price' => 150000, 'game_id' => 1, 'seller_id' => 1, 'product_condition' => 'new'],
-            ['name' => 'AK-47 Redline', 'description' => 'Skin AK-47 Redline đã sử dụng', 'price' => 120000, 'game_id' => 1, 'seller_id' => 2, 'product_condition' => 'good'],
-            ['name' => 'AK-47 Redline', 'description' => 'Skin AK-47 Redline như mới', 'price' => 140000, 'game_id' => 1, 'seller_id' => 3, 'product_condition' => 'like_new'],
+            // World//Zero Items
+            ['name' => 'Legendary Sword', 'description' => 'Thanh kiếm huyền thoại trong World//Zero', 'price' => 150000, 'game_id' => 1, 'seller_id' => 1, 'product_condition' => 'new'],
+            ['name' => 'Anime Character Skin', 'description' => 'Skin nhân vật anime hiếm', 'price' => 120000, 'game_id' => 1, 'seller_id' => 2, 'product_condition' => 'good'],
+            ['name' => 'RPG Equipment Set', 'description' => 'Bộ trang bị RPG đầy đủ', 'price' => 200000, 'game_id' => 1, 'seller_id' => 3, 'product_condition' => 'new'],
             
-            // Valorant Skins
-            ['name' => 'Vandal Prime', 'description' => 'Skin Vandal Prime collection', 'price' => 200000, 'game_id' => 2, 'seller_id' => 1, 'product_condition' => 'new'],
-            ['name' => 'Vandal Prime', 'description' => 'Skin Vandal Prime đã sử dụng', 'price' => 180000, 'game_id' => 2, 'seller_id' => 2, 'product_condition' => 'good'],
-            
-            // LoL Skins
-            ['name' => 'Yasuo High Noon', 'description' => 'Skin Yasuo High Noon', 'price' => 100000, 'game_id' => 3, 'seller_id' => 1, 'product_condition' => 'new'],
-            ['name' => 'Yasuo High Noon', 'description' => 'Skin Yasuo High Noon đã sử dụng', 'price' => 80000, 'game_id' => 3, 'seller_id' => 3, 'product_condition' => 'good'],
-            
-            // PUBG Items
-            ['name' => 'M416 Glacier', 'description' => 'Skin M416 Glacier PUBG', 'price' => 50000, 'game_id' => 4, 'seller_id' => 2, 'product_condition' => 'new'],
-            ['name' => 'M416 Glacier', 'description' => 'Skin M416 Glacier đã sử dụng', 'price' => 40000, 'game_id' => 4, 'seller_id' => 3, 'product_condition' => 'good']
+            // Dragon Adventures Items
+            ['name' => 'Rare Dragon Egg', 'description' => 'Trứng rồng hiếm trong Dragon Adventures', 'price' => 100000, 'game_id' => 2, 'seller_id' => 1, 'product_condition' => 'new'],
+            ['name' => 'Legendary Dragon', 'description' => 'Rồng huyền thoại đã thuần hóa', 'price' => 300000, 'game_id' => 2, 'seller_id' => 2, 'product_condition' => 'excellent'],
+            ['name' => 'Dragon Care Items', 'description' => 'Bộ chăm sóc rồng đầy đủ', 'price' => 80000, 'game_id' => 2, 'seller_id' => 3, 'product_condition' => 'new']
         ];
         
         foreach ($products as $product) {
