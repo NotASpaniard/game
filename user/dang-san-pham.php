@@ -28,11 +28,7 @@ try {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $price = floatval($_POST['price'] ?? 0);
     $game_id = intval($_POST['game_id'] ?? 0);
-    $product_condition = trim($_POST['product_condition'] ?? '');
-    $delivery_method = trim($_POST['delivery_method'] ?? '');
     $accept_trade = isset($_POST['accept_trade']) ? 1 : 0;
     $accept_gold = isset($_POST['accept_gold']) ? 1 : 0;
     $accept_vnd = isset($_POST['accept_vnd']) ? 1 : 0;
@@ -40,20 +36,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gold_amount = intval($_POST['gold_amount'] ?? 0);
     $vnd_amount = intval($_POST['vnd_amount'] ?? 0);
     
-    if (empty($name) || empty($description) || $price <= 0 || $game_id <= 0) {
-        $error = 'Vui lòng điền đầy đủ thông tin bắt buộc';
+    // Tạo mô tả từ thông tin thanh toán
+    $description_parts = [];
+    if ($accept_vnd && $vnd_amount > 0) {
+        $description_parts[] = "Giá VNĐ: " . number_format($vnd_amount) . "đ";
+    }
+    if ($accept_gold && $gold_amount > 0) {
+        $description_parts[] = "Giá Gold: " . number_format($gold_amount);
+    }
+    if ($accept_trade && !empty($trade_items)) {
+        $description_parts[] = "Đổi: " . $trade_items;
+    }
+    $description = implode(" | ", $description_parts);
+    
+    if (empty($name) || $game_id <= 0 || (!$accept_vnd && !$accept_gold && !$accept_trade)) {
+        $error = 'Vui lòng điền đầy đủ thông tin bắt buộc và chọn ít nhất một phương thức thanh toán';
     } else {
         try {
+            // Xác định currency và price chính
+            $currency = 'VND';
+            $price = 0;
+            if ($accept_vnd && $vnd_amount > 0) {
+                $currency = 'VND';
+                $price = $vnd_amount;
+            } elseif ($accept_gold && $gold_amount > 0) {
+                $currency = 'GOLD';
+                $price = $gold_amount;
+            } elseif ($accept_trade && !empty($trade_items)) {
+                $currency = 'ITEM';
+                $price = 0;
+            }
+            
             $stmt = $conn->prepare("
                 INSERT INTO products (
-                    seller_id, name, description, price, game_id, product_condition, 
-                    delivery_method, accept_trade, accept_gold, accept_vnd, 
+                    seller_id, name, description, price, currency, game_id, 
+                    accept_trade, accept_gold, accept_vnd, 
                     trade_items, gold_amount, vnd_amount, status, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW())
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW())
             ");
             $stmt->execute([
-                $user['id'], $name, $description, $price, $game_id, $product_condition,
-                $delivery_method, $accept_trade, $accept_gold, $accept_vnd,
+                $user['id'], $name, $description, $price, $currency, $game_id,
+                $accept_trade, $accept_gold, $accept_vnd,
                 $trade_items, $gold_amount, $vnd_amount
             ]);
             
@@ -381,25 +404,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="form-section">
                         <h3><i class="fas fa-info-circle"></i> Thông tin cơ bản</h3>
                         
-                        <div class="form-group">
-                            <label for="name" class="required">Tên sản phẩm</label>
-                            <input type="text" id="name" name="name" class="form-control" 
-                                   value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" required>
-                            <div class="form-help">Tên sản phẩm rõ ràng, dễ hiểu</div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="description" class="required">Mô tả sản phẩm</label>
-                            <textarea id="description" name="description" class="form-control" required><?php echo htmlspecialchars($_POST['description'] ?? ''); ?></textarea>
-                            <div class="form-help">Mô tả chi tiết về sản phẩm, tình trạng, cách sử dụng</div>
-                        </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="price" class="required">Giá bán (VNĐ)</label>
-                                <input type="number" id="price" name="price" class="form-control" 
-                                       value="<?php echo htmlspecialchars($_POST['price'] ?? ''); ?>" 
-                                       min="1000" step="1000" required>
+                                <label for="name" class="required">Tên sản phẩm</label>
+                                <input type="text" id="name" name="name" class="form-control" 
+                                       value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" required>
+                                <div class="form-help">Tên sản phẩm rõ ràng, dễ hiểu</div>
                             </div>
                             
                             <div class="form-group">
@@ -434,17 +444,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h3><i class="fas fa-cogs"></i> Chi tiết sản phẩm</h3>
                         
                         <div class="form-row">
-                            <div class="form-group">
-                                <label for="product_condition">Tình trạng</label>
-                                <select id="product_condition" name="product_condition" class="form-control">
-                                    <option value="">Chọn tình trạng</option>
-                                    <option value="new" <?php echo ($_POST['product_condition'] ?? '') === 'new' ? 'selected' : ''; ?>>Mới</option>
-                                    <option value="like_new" <?php echo ($_POST['product_condition'] ?? '') === 'like_new' ? 'selected' : ''; ?>>Như mới</option>
-                                    <option value="good" <?php echo ($_POST['product_condition'] ?? '') === 'good' ? 'selected' : ''; ?>>Tốt</option>
-                                    <option value="fair" <?php echo ($_POST['product_condition'] ?? '') === 'fair' ? 'selected' : ''; ?>>Khá</option>
-                                </select>
-                            </div>
-                            
                             <div class="form-group">
                                 <label for="delivery_method">Phương thức giao hàng</label>
                                 <select id="delivery_method" name="delivery_method" class="form-control">
@@ -521,9 +520,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <!-- Tóm tắt -->
                     <div class="form-section">
-                        <h3><i class="fas fa-list-check"></i> Tóm tắt</h3>
+                        <h3><i class="fas fa-list-check"></i> Tóm tắt sản phẩm</h3>
                         <div class="price-comparison">
-                            <h4>Phương thức thanh toán được chấp nhận:</h4>
+                            <h4>Thông tin sản phẩm:</h4>
+                            <div id="product-summary">
+                                <div class="price-item">
+                                    <span class="price-label">Tên sản phẩm:</span>
+                                    <span class="price-value" id="summary-name">Chưa nhập</span>
+                                </div>
+                                <div class="price-item">
+                                    <span class="price-label">Game:</span>
+                                    <span class="price-value" id="summary-game">Chưa chọn</span>
+                                </div>
+                            </div>
+                            <h4>Phương thức thanh toán:</h4>
                             <div id="payment-summary">
                                 <p>Chưa chọn phương thức nào</p>
                             </div>
@@ -671,13 +681,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // Update product summary
+        function updateProductSummary() {
+            const name = document.getElementById('name').value;
+            const gameSelect = document.getElementById('game_id');
+            const gameText = gameSelect.options[gameSelect.selectedIndex].text;
+            
+            document.getElementById('summary-name').textContent = name || 'Chưa nhập';
+            document.getElementById('summary-game').textContent = gameSelect.value ? gameText : 'Chưa chọn';
+        }
+        
         // Update summary when values change
+        document.getElementById('name').addEventListener('input', updateProductSummary);
+        document.getElementById('game_id').addEventListener('change', updateProductSummary);
         document.getElementById('trade_items').addEventListener('input', updatePaymentSummary);
         document.getElementById('gold_amount').addEventListener('input', updatePaymentSummary);
         document.getElementById('vnd_amount').addEventListener('input', updatePaymentSummary);
 
+        // Form validation
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const acceptVnd = document.getElementById('accept_vnd').checked;
+                const acceptGold = document.getElementById('accept_gold').checked;
+                const acceptTrade = document.getElementById('accept_trade').checked;
+                
+                if (!acceptVnd && !acceptGold && !acceptTrade) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ít nhất một phương thức thanh toán');
+                    return false;
+                }
+                
+                if (acceptVnd && !document.getElementById('vnd_amount').value) {
+                    e.preventDefault();
+                    alert('Vui lòng nhập giá VNĐ');
+                    return false;
+                }
+                
+                if (acceptGold && !document.getElementById('gold_amount').value) {
+                    e.preventDefault();
+                    alert('Vui lòng nhập số lượng Gold');
+                    return false;
+                }
+                
+                if (acceptTrade && !document.getElementById('trade_items').value) {
+                    e.preventDefault();
+                    alert('Vui lòng mô tả vật phẩm muốn đổi');
+                    return false;
+                }
+            });
+        }
+
         // Initialize
         toggleConditionalFields();
+        updateProductSummary();
     </script>
 </body>
 </html>

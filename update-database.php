@@ -19,6 +19,11 @@ try {
         "ALTER TABLE products ADD COLUMN vnd_amount INT DEFAULT 0"
     ];
     
+    // Cập nhật currency enum
+    $update_queries = [
+        "ALTER TABLE products MODIFY COLUMN currency ENUM('VND', 'USD', 'GOLD', 'ITEM') DEFAULT 'VND'"
+    ];
+    
     $success_count = 0;
     $error_count = 0;
     
@@ -34,6 +39,18 @@ try {
                 echo "<p style='color: red;'>❌ Lỗi: " . $e->getMessage() . "</p>";
                 $error_count++;
             }
+        }
+    }
+    
+    // Cập nhật currency enum
+    foreach ($update_queries as $query) {
+        try {
+            $conn->exec($query);
+            echo "<p style='color: green;'>✅ " . $query . "</p>";
+            $success_count++;
+        } catch (PDOException $e) {
+            echo "<p style='color: red;'>❌ Lỗi: " . $e->getMessage() . "</p>";
+            $error_count++;
         }
     }
     

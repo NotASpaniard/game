@@ -79,7 +79,7 @@ CREATE TABLE products (
     seller_id INT NOT NULL,
     price DECIMAL(12,2) NOT NULL,
     original_price DECIMAL(12,2),
-    currency ENUM('VND', 'USD') DEFAULT 'VND',
+    currency ENUM('VND', 'USD', 'GOLD', 'ITEM') DEFAULT 'VND',
     stock_quantity INT DEFAULT 1,
     product_condition ENUM('new', 'used', 'excellent', 'good', 'fair') DEFAULT 'new',
     rarity ENUM('common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic') DEFAULT 'common',
