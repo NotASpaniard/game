@@ -130,7 +130,7 @@ $total_pages = ceil($total_items / $limit);
                     <?php foreach ($wishlist_items as $item): ?>
                         <div class="product-card wishlist-item" data-product-id="<?php echo $item['product_id']; ?>">
                             <div class="product-image">
-                                <img src="<?php echo getProductImage($item['product_id']); ?>" 
+                                <img src="<?php echo getProductImage($item['product_id'], 'assets/images/no-image.jpg', true); ?>" 
                                      alt="<?php echo htmlspecialchars($item['name']); ?>"
                                      loading="lazy">
                                 <div class="product-actions">

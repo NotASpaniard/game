@@ -14,10 +14,9 @@ try {
     
     // Lấy sản phẩm nổi bật
     $stmt = $conn->query("
-        SELECT p.*, b.name as brand_name, c.name as category_name
+        SELECT p.*, g.name as game_name
         FROM products p 
-        LEFT JOIN brands b ON p.brand_id = b.id 
-        LEFT JOIN categories c ON p.category_id = c.id
+        LEFT JOIN games g ON p.game_id = g.id
         WHERE p.status = 'active' AND p.featured = 1
         ORDER BY p.created_at DESC 
         LIMIT 8
@@ -26,18 +25,17 @@ try {
     
     // Lấy sản phẩm mới nhất
     $stmt = $conn->query("
-        SELECT p.*, b.name as brand_name, c.name as category_name
+        SELECT p.*, g.name as game_name
         FROM products p 
-        LEFT JOIN brands b ON p.brand_id = b.id 
-        LEFT JOIN categories c ON p.category_id = c.id
+        LEFT JOIN games g ON p.game_id = g.id
         WHERE p.status = 'active'
         ORDER BY p.created_at DESC 
         LIMIT 12
     ");
     $recent_products = $stmt->fetchAll();
     
-    // Lấy danh mục
-    $stmt = $conn->query("SELECT * FROM categories WHERE status = 'active' ORDER BY name LIMIT 6");
+    // Lấy danh mục game
+    $stmt = $conn->query("SELECT * FROM game_categories WHERE status = 'active' ORDER BY name LIMIT 6");
     $categories = $stmt->fetchAll();
     
 } catch (Exception $e) {
@@ -56,6 +54,7 @@ try {
     <meta name="description" content="Nền tảng giao dịch vật phẩm game an toàn, nhanh chóng và uy tín. Mua bán skin, tài khoản, vật phẩm game với giá tốt nhất.">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/home.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -69,6 +68,10 @@ try {
                         <span>GameStore</span>
                     </a>
                 </div>
+                
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
                 
                 <nav class="nav">
                     <a href="index.php" class="nav-link active">Trang chủ</a>
@@ -181,7 +184,7 @@ try {
                 <?php foreach ($featured_products as $product): ?>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="<?php echo getProductImage($product['id']); ?>" 
+                            <img src="<?php echo getProductImage($product['id'], 'assets/images/no-image.jpg', false); ?>" 
                                  alt="<?php echo htmlspecialchars($product['name']); ?>"
                                  loading="lazy">
                             <div class="product-badge">Nổi bật</div>
@@ -200,7 +203,7 @@ try {
                                     <?php echo htmlspecialchars($product['name']); ?>
                                 </a>
                             </h3>
-                            <p class="product-category"><?php echo htmlspecialchars($product['category_name']); ?></p>
+                            <p class="product-category"><?php echo htmlspecialchars($product['game_name'] ?? 'Game'); ?></p>
                             <div class="product-price">
                                 <span class="price-current"><?php echo number_format($product['price']); ?>đ</span>
                                 <?php if ($product['sale_price']): ?>
@@ -229,7 +232,7 @@ try {
                 <?php foreach ($recent_products as $product): ?>
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="<?php echo getProductImage($product['id']); ?>" 
+                            <img src="<?php echo getProductImage($product['id'], 'assets/images/no-image.jpg', false); ?>" 
                                  alt="<?php echo htmlspecialchars($product['name']); ?>"
                                  loading="lazy">
                             <div class="product-actions">
@@ -247,7 +250,7 @@ try {
                                     <?php echo htmlspecialchars($product['name']); ?>
                                 </a>
                             </h3>
-                            <p class="product-category"><?php echo htmlspecialchars($product['category_name']); ?></p>
+                            <p class="product-category"><?php echo htmlspecialchars($product['game_name'] ?? 'Game'); ?></p>
                             <div class="product-price">
                                 <span class="price-current"><?php echo number_format($product['price']); ?>đ</span>
                                 <?php if ($product['sale_price']): ?>
@@ -346,6 +349,7 @@ try {
         </div>
     </footer>
 
+    <script src="assets/js/notifications.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/home.js"></script>
 </body>

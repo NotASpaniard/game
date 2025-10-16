@@ -1,7 +1,6 @@
 <?php
-// Cấu hình session bảo mật - phiên bản sửa lỗi
+// Cấu hình session bảo mật - chỉ khi chưa có session
 if (session_status() === PHP_SESSION_NONE) {
-    // Chỉ cấu hình khi chưa có session
     ini_set('session.cookie_httponly', 1);
     ini_set('session.cookie_secure', 0); // Đặt 1 nếu sử dụng HTTPS
     ini_set('session.use_strict_mode', 1);

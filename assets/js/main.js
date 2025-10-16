@@ -26,7 +26,8 @@ async function fetchData(url, options = {}) {
     }
 }
 
-// Notification System
+// Notification System - Import từ file riêng
+// Đã được di chuyển vào assets/js/notifications.js
 class NotificationManager {
     static show(message, type = 'info', duration = 3000) {
         const notification = document.createElement('div');
@@ -380,6 +381,23 @@ class FormValidator {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize mobile menu
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const navMenu = document.querySelector('.nav');
+
+    if (mobileMenuToggle && navMenu) {
+        mobileMenuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    }
+
     // Initialize cart
     CartManager.updateCartCount();
 

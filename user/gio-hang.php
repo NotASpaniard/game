@@ -108,7 +108,7 @@ try {
                             <?php foreach ($cart_items as $item): ?>
                                 <div class="cart-item" data-product-id="<?php echo $item['product_id']; ?>">
                                     <div class="item-image">
-                                        <img src="<?php echo getProductImage($item['product_id']); ?>" 
+                                        <img src="<?php echo getProductImage($item['product_id'], 'assets/images/no-image.jpg', true); ?>" 
                                              alt="<?php echo htmlspecialchars($item['name']); ?>">
                                     </div>
                                     

@@ -141,12 +141,12 @@ if ($product_id <= 0) {
                 <div class="product-detail">
                     <div class="product-images">
                         <div class="main-image">
-                            <img src="<?php echo getProductImage($product['id']); ?>" 
+                            <img src="<?php echo getProductImage($product['id'], 'assets/images/no-image.jpg', true); ?>" 
                                  alt="<?php echo htmlspecialchars($product['name']); ?>" 
                                  id="main-image">
                         </div>
                         <div class="thumbnail-images">
-                            <img src="<?php echo getProductImage($product['id']); ?>" 
+                            <img src="<?php echo getProductImage($product['id'], 'assets/images/no-image.jpg', true); ?>" 
                                  alt="Thumbnail" class="thumbnail active">
                         </div>
                     </div>
@@ -223,7 +223,7 @@ if ($product_id <= 0) {
                         <?php foreach ($related_products as $related): ?>
                             <div class="product-card">
                                 <div class="product-image">
-                                    <img src="<?php echo getProductImage($related['id']); ?>" 
+                                    <img src="<?php echo getProductImage($related['id'], 'assets/images/no-image.jpg', true); ?>" 
                                          alt="<?php echo htmlspecialchars($related['name']); ?>"
                                          loading="lazy">
                                     <div class="product-actions">
