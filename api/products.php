@@ -1,14 +1,20 @@
 <?php
-require_once '../config/session.php';
-require_once '../config/database.php';
-require_once '../config/security.php';
-
+// API sản phẩm - đơn giản và ổn định
 header('Content-Type: application/json');
 
-if (!isLoggedIn()) {
+// Kiểm tra session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Kiểm tra đăng nhập
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Vui lòng đăng nhập để thực hiện chức năng này.']);
     exit();
 }
+
+// Include database
+require_once dirname(__DIR__) . '/config/database.php';
 
 $user_id = $_SESSION['user_id'];
 $db = new Database();

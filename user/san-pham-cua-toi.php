@@ -81,6 +81,39 @@ $total_pages = ceil($total_products / $limit);
         .add-product-btn {
             margin-bottom: var(--spacing-lg);
         }
+        .action-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        .action-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+        .edit-btn {
+            right: 50px;
+        }
+        .delete-btn {
+            background: rgba(220, 53, 69, 0.8);
+        }
+        .delete-btn:hover {
+            background: rgba(220, 53, 69, 1);
+        }
+        .product-image {
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -204,14 +237,6 @@ $total_pages = ceil($total_products / $limit);
                                         <?php echo ucfirst($product['status']); ?>
                                     </span>
                                 </div>
-                                <div class="product-actions">
-                                    <a href="sua-san-pham.php?id=<?php echo $product['id']; ?>" class="btn btn-outline btn-sm">
-                                        <i class="fas fa-edit"></i> Sửa
-                                    </a>
-                                    <button class="btn btn-error btn-sm delete-product" data-product-id="<?php echo $product['id']; ?>">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -287,13 +312,24 @@ $total_pages = ceil($total_products / $limit);
 
     <script src="../assets/js/main.js"></script>
     <script>
+        // Edit product
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                window.location.href = `sua-san-pham.php?id=${productId}`;
+            });
+        });
+
         // Delete product
-        document.querySelectorAll('.delete-product').forEach(button => {
+        document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const productId = this.dataset.productId;
                 
                 if (confirm('Bạn có chắc muốn xóa sản phẩm này? Hành động này không thể hoàn tác.')) {
-                    // Implement delete functionality
+                    // Show loading state
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    this.disabled = true;
+                    
                     fetch('../api/products.php', {
                         method: 'POST',
                         headers: {
@@ -304,18 +340,32 @@ $total_pages = ceil($total_products / $limit);
                             product_id: productId
                         })
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            this.closest('.product-card').remove();
-                            NotificationManager.show('Đã xóa sản phẩm', 'success');
-                        } else {
-                            NotificationManager.show(data.message || 'Có lỗi xảy ra', 'error');
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        return response.text(); // Get raw response first
+                    })
+                    .then(text => {
+                        console.log('Raw response:', text);
+                        try {
+                            const data = JSON.parse(text);
+                            if (data.success) {
+                                this.closest('.product-card').remove();
+                                // Show success message
+                                alert('Đã xóa sản phẩm thành công!');
+                                // Reload page to update stats
+                                location.reload();
+                            } else {
+                                alert(data.message || 'Có lỗi xảy ra khi xóa sản phẩm');
+                            }
+                        } catch (e) {
+                            console.error('JSON parse error:', e);
+                            console.error('Response text:', text);
+                            alert('Có lỗi xảy ra khi xử lý phản hồi từ server');
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                        NotificationManager.show('Có lỗi xảy ra', 'error');
+                        console.error('Fetch error:', error);
+                        alert('Có lỗi xảy ra khi kết nối đến server');
                     });
                 }
             });

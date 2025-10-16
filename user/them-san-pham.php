@@ -46,12 +46,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$user['id'], $name, $description, $price, $game_id, $product_condition, $delivery_method]);
             
             $product_id = $conn->lastInsertId();
+            
+            // Xử lý upload ảnh
+            if (!empty($_FILES['images']['name'][0])) {
+                $upload_dir = '../images/products/';
+                if (!file_exists($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                
+                $uploaded_images = [];
+                for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
+                    if ($_FILES['images']['error'][$i] === UPLOAD_ERR_OK) {
+                        $file_extension = pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION);
+                        $new_filename = "product_{$product_id}_{$i}." . $file_extension;
+                        $upload_path = $upload_dir . $new_filename;
+                        
+                        if (move_uploaded_file($_FILES['images']['tmp_name'][$i], $upload_path)) {
+                            $uploaded_images[] = "images/products/{$new_filename}";
+                        }
+                    }
+                }
+                
+                // Lưu ảnh vào database
+                if (!empty($uploaded_images)) {
+                    $stmt = $conn->prepare("INSERT INTO product_images (product_id, image_url, is_primary) VALUES (?, ?, ?)");
+                    foreach ($uploaded_images as $index => $image_url) {
+                        $stmt->execute([$product_id, $image_url, $index === 0 ? 1 : 0]);
+                    }
+                }
+            }
+            
             $success = 'Thêm sản phẩm thành công! <a href="san-pham-cua-toi.php">Xem sản phẩm của tôi</a>';
             
             // Clear form
             $_POST = [];
         } catch (Exception $e) {
-            $error = 'Có lỗi xảy ra, vui lòng thử lại';
+            $error = 'Có lỗi xảy ra, vui lòng thử lại: ' . $e->getMessage();
         }
     }
 }
