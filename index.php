@@ -1,7 +1,14 @@
 <?php
-require_once 'config/session.php';
+// Bắt đầu output buffering để tránh session warnings
+ob_start();
+
 require_once 'config/database.php';
 require_once 'config/image-helper.php';
+
+// Chỉ load session khi cần thiết
+if (session_status() === PHP_SESSION_NONE) {
+    require_once 'config/session.php';
+}
 
 // Lấy sản phẩm nổi bật
 $featured_products = [];
@@ -354,3 +361,8 @@ try {
     <script src="assets/js/home.js"></script>
 </body>
 </html>
+
+<?php
+// Clean output buffer để tránh session warnings
+ob_end_flush();
+?>
