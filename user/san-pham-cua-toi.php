@@ -209,7 +209,7 @@ $total_pages = ceil($total_products / $limit);
                     <?php foreach ($products as $product): ?>
                         <div class="product-card">
                             <div class="product-image">
-                                <img src="<?php echo getProductImage($product['id']); ?>" 
+                                <img src="<?php echo getProductImage($product['id'], 'assets/images/no-image.jpg', true); ?>" 
                                      alt="<?php echo htmlspecialchars($product['name']); ?>"
                                      loading="lazy">
                                 <div class="product-badge">Của tôi</div>

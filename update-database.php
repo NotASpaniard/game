@@ -16,7 +16,8 @@ try {
         "ALTER TABLE products ADD COLUMN accept_vnd BOOLEAN DEFAULT TRUE",
         "ALTER TABLE products ADD COLUMN trade_items TEXT",
         "ALTER TABLE products ADD COLUMN gold_amount INT DEFAULT 0",
-        "ALTER TABLE products ADD COLUMN vnd_amount INT DEFAULT 0"
+        "ALTER TABLE products ADD COLUMN vnd_amount INT DEFAULT 0",
+        "ALTER TABLE products ADD COLUMN delivery_method VARCHAR(50) DEFAULT NULL"
     ];
     
     // Cập nhật currency enum

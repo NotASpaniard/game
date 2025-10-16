@@ -1,13 +1,49 @@
 <?php
-function getProductImage($product_id, $fallback_url = 'assets/images/no-image.png') {
+function getProductImage($product_id, $fallback_url = 'assets/images/no-image.jpg', $relative_path = false) {
+    // Kết nối database để lấy ảnh từ bảng product_images
+    try {
+        require_once __DIR__ . '/database.php';
+        $db = new Database();
+        $conn = $db->getConnection();
+        
+        $stmt = $conn->prepare("
+            SELECT image_url FROM product_images 
+            WHERE product_id = ? 
+            ORDER BY is_primary DESC, id ASC 
+            LIMIT 1
+        ");
+        $stmt->execute([$product_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result && !empty($result['image_url'])) {
+            // Kiểm tra file có tồn tại không
+            $image_path = __DIR__ . '/../' . $result['image_url'];
+            if (file_exists($image_path)) {
+                return $relative_path ? '../' . $result['image_url'] : $result['image_url'];
+            }
+        }
+    } catch (Exception $e) {
+        error_log("Error getting product image: " . $e->getMessage());
+    }
+    
+    // Fallback: tìm ảnh theo pattern cũ
     $images_dir = __DIR__ . '/../images/products/';
     $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     
-    // Tìm ảnh theo pattern: product_{id}.{extension}
+    // Tìm ảnh theo pattern: product_{id}_{index}.{extension}
+    foreach ($allowed_extensions as $ext) {
+        $pattern = $images_dir . "product_{$product_id}_*." . $ext;
+        $files = glob($pattern);
+        if (!empty($files)) {
+            return $relative_path ? "../images/products/" . basename($files[0]) : "images/products/" . basename($files[0]);
+        }
+    }
+    
+    // Tìm ảnh theo pattern cũ: product_{id}.{extension}
     foreach ($allowed_extensions as $ext) {
         $image_path = $images_dir . "product_{$product_id}.{$ext}";
         if (file_exists($image_path)) {
-            return "images/products/product_{$product_id}.{$ext}";
+            return $relative_path ? "../images/products/product_{$product_id}.{$ext}" : "images/products/product_{$product_id}.{$ext}";
         }
     }
     
@@ -16,7 +52,7 @@ function getProductImage($product_id, $fallback_url = 'assets/images/no-image.pn
     if (is_dir($product_dir)) {
         $files = glob($product_dir . '*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
         if (!empty($files)) {
-            return 'images/products/' . $product_id . '/' . basename($files[0]);
+            return $relative_path ? '../images/products/' . $product_id . '/' . basename($files[0]) : 'images/products/' . $product_id . '/' . basename($files[0]);
         }
     }
     

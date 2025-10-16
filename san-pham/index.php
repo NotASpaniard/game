@@ -63,7 +63,7 @@ try {
     }
     
     if ($condition) {
-        $where_conditions[] = "p.condition = ?";
+        $where_conditions[] = "p.product_condition = ?";
         $params[] = $condition;
     }
     
@@ -335,7 +335,7 @@ $total_pages = ceil($total_products / $limit);
                             <?php foreach ($products as $product): ?>
                                 <div class="product-card">
                                     <div class="product-image">
-                                        <img src="<?php echo getProductImage($product['id']); ?>" 
+                                        <img src="<?php echo getProductImage($product['id'], 'assets/images/no-image.jpg', true); ?>" 
                                              alt="<?php echo htmlspecialchars($product['name']); ?>"
                                              loading="lazy">
                                         <?php if ($product['featured']): ?>
@@ -373,11 +373,11 @@ $total_pages = ceil($total_products / $limit);
                                             <span class="seller-name"><?php echo htmlspecialchars($product['seller_name']); ?></span>
                                         </div>
                                         <div class="product-meta">
-                                            <span class="condition condition-<?php echo $product['condition']; ?>">
-                                                <?php echo ucfirst($product['condition']); ?>
+                                            <span class="condition condition-<?php echo $product['product_condition'] ?? 'new'; ?>">
+                                                <?php echo ucfirst($product['product_condition'] ?? 'new'); ?>
                                             </span>
-                                            <span class="rarity rarity-<?php echo $product['rarity']; ?>">
-                                                <?php echo ucfirst($product['rarity']); ?>
+                                            <span class="rarity rarity-<?php echo $product['rarity'] ?? 'common'; ?>">
+                                                <?php echo ucfirst($product['rarity'] ?? 'common'); ?>
                                             </span>
                                         </div>
                                         <button class="btn btn-primary add-to-cart-btn" data-product-id="<?php echo $product['id']; ?>">
